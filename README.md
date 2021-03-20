@@ -1,2 +1,6 @@
 # hw-compilers
-Homework Assignments for Compilers course in 2021 Spring term.
+UoA, K31 Compilers - Spring Semester 2021
+
+- Homework 1: 
+- Homework 2: 
+- Homework 3:
