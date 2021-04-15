@@ -2,3 +2,5 @@
 *.iml
 .idea
 
+# Output DIR
+out/
