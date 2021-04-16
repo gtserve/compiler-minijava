@@ -139,25 +139,10 @@ public class CalculatorParser {
         return value;
     }
 
-    public void parseAll() throws IOException {
-        while (lookahead != EOF) {
-            try {
-                System.out.println(parse());
-            } catch (IOException | ParseError exc) {
-                do {
-                    lookahead = INPUT.read();
-                } while (lookahead != '\n');
-                System.err.println(exc.getMessage());
-            }
-            consume();
-        }
-    }
-
     public static void main(String[] args) {
         try {
             CalculatorParser parser = new CalculatorParser();
             System.out.println(parser.parse());
-//            parser.parseAll();
         } catch (IOException | ParseError exc) {
             System.err.println(exc.getMessage());
         }
