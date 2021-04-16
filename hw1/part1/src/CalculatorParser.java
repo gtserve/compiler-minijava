@@ -1,6 +1,5 @@
 import java.io.InputStream;
 import java.io.IOException;
-import java.lang.Math;
 
 public class CalculatorParser {
 
@@ -14,8 +13,12 @@ public class CalculatorParser {
     }
 
     /* Auxiliary functions: */
-    private boolean isNotDigit(int x) {
-        return (x < '0' || x > '9');
+    private boolean isDigit(int x) {
+        return (x >= '0' && x <= '9');
+    }
+    
+    private boolean isNonZeroDigit(int x) {
+        return (x >= '1' && x <= '9');
     }
 
     private int evalDigit(int d) {
@@ -53,7 +56,7 @@ public class CalculatorParser {
                 lookahead == ')' || isVoid(lookahead))
             return number;
 
-        if (isNotDigit(lookahead))
+        if (!isDigit(lookahead))
             throw new ParseError();
 
         int value = (number * 10) + evalDigit(lookahead);
@@ -62,7 +65,7 @@ public class CalculatorParser {
     }
 
     private int num() throws IOException, ParseError {
-        if (isNotDigit(lookahead) && lookahead != '(')
+        if (!isNonZeroDigit(lookahead) && lookahead != '(')
             throw new ParseError();
 
         if (lookahead == '(') {
@@ -97,7 +100,7 @@ public class CalculatorParser {
     }
 
     private int term() throws IOException, ParseError {
-        if (isNotDigit(lookahead) && lookahead != '(')
+        if (!isNonZeroDigit(lookahead) && lookahead != '(')
             throw new ParseError();
 
         return termRest(num());
@@ -120,7 +123,7 @@ public class CalculatorParser {
     }
 
     private int exp() throws IOException, ParseError {
-        if (isNotDigit(lookahead) && lookahead != '(')
+        if (!isNonZeroDigit(lookahead) && lookahead != '(')
             throw new ParseError();
 
         return expRest(term());
