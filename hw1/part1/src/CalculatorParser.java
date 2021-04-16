@@ -18,12 +18,26 @@ public class CalculatorParser {
         return (x < '0' || x > '9');
     }
 
+    private int evalDigit(int d) {
+        return d - '0';
+    }
+
     private boolean isVoid(int x) {
         return (x == '\n' || x == EOF);
     }
 
-    private int evalDigit(int d) {
-        return d - '0';
+    private int pow(int base, int exponent) {
+        if (exponent < 0)
+            return 0;
+        if (exponent == 0)
+            return 1;
+        if (exponent == 1)
+            return base;
+
+        if (exponent % 2 == 0)
+            return pow(base * base, exponent/2);
+        else
+            return base * pow(base * base, exponent/2);
     }
 
     private void consume() throws IOException {
@@ -79,7 +93,7 @@ public class CalculatorParser {
             throw new ParseError();
 
         consume();
-        return termRest((int) Math.pow(num_value, num()));
+        return termRest(pow(num_value, num()));
     }
 
     private int term() throws IOException, ParseError {
