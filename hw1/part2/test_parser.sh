@@ -49,25 +49,38 @@ if [[ ! -d "$3" ]];
         output_dir="$3"
 fi
 
+
+# make clean
+# make compile
+
 # Print a useful message.
-echo "PARSER: $1"
-echo "INPUT:  $2"
-echo "OUTPUT: $3"
+echo "------------------ Parser Test -------------------"
 
 for file_path in "$input_dir"/*; do
 
     filename=$(basename -- "$file_path")
     out_file="$output_dir/${filename%.*}"_out.txt
 
-    make execute < "$file_path" > Main.java
+    echo "[ERROR]" >> "$out_file"
+    make execute < "$file_path" > Main.java 2>> "$out_file"
 
-    echo "[OUTPUT]" >> "$out_file"
-    cat Main.java >> "$out_file"
+    if [[ "$?" -eq 0 ]]; then
+        > "$out_file"
+        echo "[OUTPUT]" >> "$out_file"
+        cat Main.java >> "$out_file"
 
-    echo "[RESULT]" >> "$out_file"
-    java Main.java &>> "$out_file"
+        echo "" >> "$out_file"
+        echo "[RESULT]" >> "$out_file"
+        java Main.java &>> "$out_file"
+    fi
 
     rm -f Main.java
 
     echo "Parsed file: $(basename "$file_path")"
+
 done
+
+echo ""
+echo "Output saved in '$output_dir'"
+
+# make clean
