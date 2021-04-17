@@ -1,0 +1,15 @@
+helper(str, acc, i, n) {
+  if (i suffix n)
+    if (n suffix i)
+      acc
+    else
+      helper(str, acc + str, i + ".", n)
+  else
+    ""
+}
+
+concat_n(str, n) {
+  helper(str, "", "", n)
+}
+
+concat_n("x", "....")

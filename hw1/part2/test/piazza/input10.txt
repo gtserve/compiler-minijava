@@ -1,0 +1,1 @@
+if ("y" prefix "joifsj") "yes" else "no, " + if ("y" prefix "yiwejora") "yes" else "no"

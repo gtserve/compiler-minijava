@@ -1,0 +1,5 @@
+boo() {
+  "boo"
+}
+
+"output is: " + if ("no" suffix "e" + if ("b" prefix boo()) "yes" else "no") "bar" else "baz" + "bob"
