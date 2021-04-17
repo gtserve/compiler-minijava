@@ -123,7 +123,7 @@ argum_list_top_rest ::= COMMA expr_top:e argum_list_top_rest:al
                         ;
 
 expr_top ::= expr_top:e1 CONCAT expr_top:e2
-            {: RESULT = e1 + " + " + e2; :}
+            {: RESULT = "(" +  e1 + " + " + e2 + ")"; :}
 
             | IF LPAREN expr_top:e1 PREFIX expr_top:e2 RPAREN expr_top:e3 ELSE expr_top:e4
             {: RESULT = "((" + e2 + ".startsWith(" + e1 + ")) ? " + e3 + " : " + e4 + ")"; :}
@@ -143,7 +143,7 @@ factor_top  ::= STR_LITERAL:s
                 ;
 
 expr ::= expr:e1 CONCAT expr:e2
-        {: RESULT = e1 + " + " + e2; :}
+        {: RESULT = "(" +  e1 + " + " + e2 + ")"; :}
 
         | IF LPAREN expr:e1 PREFIX expr:e2 RPAREN expr:e3 ELSE expr:e4
         {: RESULT = "((" + e2 + ".startsWith(" + e1 + ")) ? " + e3 + " : " + e4 + ")"; :}
