@@ -1,0 +1,162 @@
+/* ---------------------------------- Preliminary Declarations ---------------------------------- */
+
+import java_cup.runtime.*;
+
+parser code {:
+    Scanner scanner;
+    StringBuilder strBuilder = new StringBuilder();
+    String output;
+
+    Parser(Scanner s) { 
+        this.scanner = s;
+    }
+:}
+
+scan with {: return scanner.next_token(); :};
+
+
+/* ------------------------- Declaration of Terminals and Non Terminals ------------------------- */
+
+terminal         CONCAT, IF, ELSE, PREFIX, SUFFIX;
+terminal         LPAREN, RPAREN, RBRACE, COMMA, SPECIAL;
+terminal String  STR_LITERAL, IDENTIFIER;
+
+non terminal         program;
+non terminal String  fun_def_list, fun_def, fun_call_list, fun_call, fun_call_top;
+non terminal String  param_list, param_list_rest, argum_list, argum_list_rest;
+non terminal String  argum_list_top, argum_list_top_rest;
+non terminal String  factor, expr, no_id_factor, no_id_expr;
+
+
+/* ------------------------- Precedence and Associatively of Terminals -------------------------- */
+
+precedence left IF;
+precedence left CONCAT;
+
+
+/* ------------------------------------------ Grammar ------------------------------------------- */
+
+program ::= fun_def_list:fdl fun_call_list:fcl
+            {: 
+                output  = "public class Main {\n";
+                output += fdl;
+                output += fcl;
+                output += "\t}\n\n";
+                output += "}\n";
+                System.out.println(output);
+            :}
+            ;
+
+fun_def_list  ::= fun_def:fd fun_def_list:fdl
+                {: RESULT = fd + '\n' + fdl; :}
+
+                | fun_call_top:fc
+                {: 
+                    RESULT = "\tpublic static void main(String[] args) {\n" 
+                                + "\t\tSystem.out.println(" + fc + ");\n"; 
+                            :}
+                ;
+
+fun_call_list  ::= fun_call_top:fc fun_call_list:fcl 
+                {: RESULT = "\t\tSystem.out.println(" + fc + ");\n" + fcl; :}
+
+                | fun_call_top:fc
+                {: RESULT = "\t\tSystem.out.println(" + fc + ");\n"; :}
+                ;
+
+fun_def ::= IDENTIFIER:id LPAREN param_list:pl SPECIAL expr:e RBRACE
+            {: RESULT = "\tpublic static String " + id + '(' + pl + ") {\n" + "\t\treturn " + e + ";\n\t}\n"; :}
+            ;
+
+fun_call ::= IDENTIFIER:id LPAREN argum_list:al RPAREN
+            {: RESULT = id + '(' + al + ')'; :}
+            ;
+
+fun_call_top ::= IDENTIFIER:id LPAREN argum_list_top:al RPAREN
+                {: RESULT = id + '(' + al + ')'; :}
+                ;
+
+param_list ::= IDENTIFIER:id param_list_rest:pl
+            {: RESULT = "String " + id + pl; :}
+            
+            | /* empty */
+            {: RESULT = ""; :}
+            ;
+
+param_list_rest ::= COMMA IDENTIFIER:id param_list_rest:pl
+                    {: RESULT = ", String " + id + pl; :}
+
+                    | /* empty */
+                    {: RESULT = ""; :}
+                    ;
+
+argum_list ::= expr:e argum_list_rest:al
+            {: RESULT = e + al; :}
+
+            | /* empty */
+            {: RESULT = ""; :}
+            ;
+
+argum_list_rest ::= COMMA expr:e argum_list_rest:al
+                    {: RESULT = ", " + e + al; :}
+
+                    | /* empty */
+                    {: RESULT = ""; :}
+                    ;
+
+argum_list_top ::= no_id_expr:e argum_list_top_rest:al
+                    {: RESULT = e + al; :}
+
+                    | /* empty */
+                    {: RESULT = ""; :}
+                    ;
+
+argum_list_top_rest ::= COMMA no_id_expr:e argum_list_top_rest:al
+                        {: RESULT = ", " + e + al; :}
+
+                        | /* empty */
+                        {: RESULT = ""; :}
+                        ;
+
+expr ::= expr:e1 CONCAT expr:e2
+        {: RESULT = e1 + " + " + e2; :}
+
+        | IF LPAREN expr:e1 PREFIX expr:e2 RPAREN expr:e3 ELSE expr:e4
+        {: RESULT = "((" + e2 + ".startsWith(" + e1 + ")) ? " + e3 + " : " + e4 + ")"; :}
+
+        | IF LPAREN expr:e1 SUFFIX expr:e2 RPAREN expr:e3 ELSE expr:e4
+        {: RESULT = "((" + e2 + ".endsWith(" + e1 + ")) ? " + e3 + " : " + e4 + ")"; :}
+
+        | factor:f
+        {: RESULT = f; :}
+        ;       
+
+factor ::= STR_LITERAL:s
+        {: RESULT = '"' + s + '"'; :}
+
+        |  IDENTIFIER:id
+        {: RESULT = id; :}
+
+        |  fun_call:fun
+        {: RESULT = fun; :}
+        ;
+
+no_id_expr ::= no_id_expr:e1 CONCAT no_id_expr:e2
+        {: RESULT = e1 + " + " + e2; :}
+
+        | IF LPAREN no_id_expr:e1 PREFIX no_id_expr:e2 RPAREN no_id_expr:e3 ELSE no_id_expr:e4
+        {: RESULT = "((" + e2 + ".startsWith(" + e1 + ")) ? " + e3 + " : " + e4 + ")"; :}
+
+        | IF LPAREN no_id_expr:e1 SUFFIX no_id_expr:e2 RPAREN no_id_expr:e3 ELSE no_id_expr:e4
+        {: RESULT = "((" + e2 + ".endsWith(" + e1 + ")) ? " + e3 + " : " + e4 + ")"; :}
+
+        | no_id_factor:f
+        {: RESULT = f; :}
+        ;       
+
+no_id_factor ::= STR_LITERAL:s
+        {: RESULT = '"' + s + '"'; :}
+
+        |  fun_call_top:fun
+        {: RESULT = fun; :}
+        ;

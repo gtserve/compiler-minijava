@@ -1,0 +1,12 @@
+name() {
+    "John"
+}
+
+boba(x) {
+    if (x prefix "George")
+        "TRUE"
+    else
+        "FALSE"
+}
+
+boba(name())
