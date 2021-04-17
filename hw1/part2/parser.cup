@@ -70,7 +70,7 @@ fun_def ::= IDENTIFIER:id LPAREN param_list:pl SPECIAL expr:e RBRACE
                 RESULT += "\t\treturn " + e + ";\n";
                 RESULT += "\t}\n";
             :}
-            ;
+            ;   
 
 fun_call_top ::= IDENTIFIER:id LPAREN argum_list_top:al RPAREN
                 {: RESULT = id + '(' + al + ')'; :}
