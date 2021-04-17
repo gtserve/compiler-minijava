@@ -6,7 +6,7 @@ compile:
 	javac -cp ../java-cup-11b-runtime.jar *.java
 
 execute:
-	@ java -cp ../java-cup-11b-runtime.jar:. Main
+	@ java -cp ../java-cup-11b-runtime.jar:. Driver
 
 clean:
-	rm -f *.class Scanner.java Parser.java sym.java
+	rm -f *.class Main.java Scanner.java Parser.java sym.java
