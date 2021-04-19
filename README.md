@@ -1,4 +1,4 @@
-# hw-compilers
+# **hw-compilers**
 UoA, K31 Compilers - Spring Semester 2021
 
 - Homework 1: LL(1) Calculator Parser & Translator to Java
@@ -7,9 +7,9 @@ UoA, K31 Compilers - Spring Semester 2021
 
 ---
 
-## Homework 1:
+## **Homework 1:**
 
-- ### Part 1 - LL(1) Calculator Parser:
+### **Part 1 - LL(1) Calculator Parser:**
 
 For the first part of this homework you should implement a simple calculator. The calculator should
 accept expressions with the addition, subtraction, and exponentiation operators, as well as
@@ -40,7 +40,7 @@ or EOF.
 Your parser should read its input from the standard input (e.g., via an InputStream on System.in)
 and write the computed values of expressions to the standard output (System.out). Parse errors
 should be reported on standard error (System.err).
-- ### Part 2 - LL(1) Calculator Parser:
+### **Part 2 - LL(1) Calculator Parser:**
 
 In the second part of this homework you will implement a parser and translator for a language
 supporting string operations. The language supports the concatenation (+) operator over strings,
@@ -80,6 +80,98 @@ declarations must precede all statements.
 
 As with the first part of this assignment, you should accept input programs from stdin and print
 output Java programs to stdout.
+
+### **Example #1:**
+
+Input:
+
+    name()  {
+        "John"
+    }
+
+    surname() {
+        "Doe"
+    }
+
+    fullname(first_name, sep, last_name) {
+        first_name + sep + last_name
+    }
+
+    name()
+    surname()
+    fullname(name(), " ", surname())\
+
+Output (Java):
+
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println(name());
+            System.out.println(surname());
+            System.out.println(fullname(name(), " ", surname()));
+        }
+        
+        public static String name() {
+            return "John";
+        }
+        
+        public static String surname() {
+            return "Doe";
+        }
+        
+        public static String fullname(String first_name, String sep, String last_name) {
+            return first_name + sep + last_name;
+        }
+    }
+
+### **Example #2**
+
+Input:
+
+    name() {
+        "John"
+    }
+
+
+    repeat(x) {
+        x + x
+    }
+
+    cond_repeat(c, x) {
+        if (c prefix "yes")
+            if("yes" prefix c)
+                repeat(x)
+            else
+                x
+        else
+            x
+    }
+
+    cond_repeat("yes", name())
+    cond_repeat("no", "Jane")
+
+### **Example #3**
+
+Input:
+
+    findLangType(langName) {
+        if ("Java" prefix langName)
+            if(langName prefix "Java")
+                "Static"
+            else
+                if("script" suffix langName)
+                    "Dynamic"
+                else
+                    "Unknown"
+        else
+            if ("script" suffix langName)
+                "Probably Dynamic"
+            else
+                "Unknown"
+    }
+
+    findLangType("Java")
+    findLangType("Javascript")
+    findLangType("Typescript")
 
 ---
 
