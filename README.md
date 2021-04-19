@@ -1,14 +1,11 @@
 # **hw-compilers**
-UoA, K31 Compilers - Spring Semester 2021
 
+UoA, K31 Compilers - Spring Semester 2021
 - Homework 1: LL(1) Calculator Parser & Translator to Java
 - Homework 2: MiniJava Static Checking (Semantic Analysis)
 - Homework 3:
 
----
-
 ## **Homework 1:**
-
 ### **Part 1 - LL(1) Calculator Parser:**
 
 For the first part of this homework you should implement a simple calculator. The calculator should
@@ -173,8 +170,6 @@ Input:
     findLangType("Javascript")
     findLangType("Typescript")
 
----
-
 
 ## **Homework 2 - MiniJava Static Checking (Semantic Analysis):**
 
@@ -290,5 +285,4 @@ Your program should run as follows:
 That is, your program must perform semantic analysis on all files given as arguments. May the Force
 be with you!
 
----
-## Homework 3:
+## **Homework 3:**
