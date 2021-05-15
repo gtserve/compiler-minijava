@@ -25,10 +25,9 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
         return classes;
     }
 
-    private boolean isBasicType(String type) {
-        return (type.equals("int") || type.equals("boolean")
-                || type.equals("int[]") || type.equals("boolean[]"));
-    }
+//    private boolean isBasicType(String type) {
+//        return (type.equals("int") || type.equals("boolean") || type.equals("int[]"));
+//    }
 
     public void printDeclarations() {
         System.out.println("----------------- Declarations -----------------");
@@ -41,7 +40,11 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
             entry.printOffsets();
     }
 
-    /* --------------------- Overridden visit() methods --------------------- */
+    /* ------------------------------- Overridden visit() methods ------------------------------- */
+
+    public String visit(NodeToken n, String argu) throws Exception {
+        return n.toString();
+    }
 
     /**
      * f0 -> "class"
@@ -147,7 +150,7 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
         /* SEM_CHECK: Super Class must be declared. */
         ClassEntry superClass = (ClassEntry) classes.get(superClassId);
         if (superClass == null) {
-            throw new SemanticException("SEM_ERROR: Class '" + superClassId
+            throw new SemanticException("Class '" + superClassId
                     + "' hasn't been declared!");
         }
 
@@ -194,7 +197,7 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
         /* SEM_CHECK: Unique Method name. */
         ClassEntry currentClass = (ClassEntry) current;
         if (currentClass.getMethods().contains(id)) {
-            throw new SemanticException("SEM_ERROR: Method '" + id
+            throw new SemanticException("Method '" + id
                     + "' is already defined in this class!");
         }
 
@@ -212,7 +215,7 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
         MethodEntry me2 = (MethodEntry) me.getParent().lookup(id, METHOD_ENTRY);
         if (me2 != null) {
             if (!me.matches(me2)) {
-                throw new SemanticException("SEM_ERROR: Incorrect override with "
+                throw new SemanticException("Incorrect override with "
                         + "method '" + id + "'");
             }
         }
@@ -243,7 +246,7 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
 
         /* SEM_CHECK: Unique Parameter name. */
         if (current.lookup(id, VAR_ENTRY) != null) {
-            throw new SemanticException("SEM_ERROR: Parameter '" + id
+            throw new SemanticException("Parameter '" + id
                     + "' is already defined in this scope!");
         }
 
@@ -272,7 +275,7 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
         if (current.getEntryType() == CLASS_ENTRY) {
             ClassEntry currentClass = (ClassEntry) current;
             if (currentClass.getFields().contains(id)) {
-                throw new SemanticException("SEM_ERROR: Field '" + id
+                throw new SemanticException("Field '" + id
                         + "' is already defined in this class!");
             }
             currentClass.insertField(ve);
@@ -280,7 +283,7 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
             MethodEntry currentMethod = (MethodEntry) current;
             if (currentMethod.getParams().contains(id)
                     || currentMethod.getLocals().contains(id)) {
-                throw new SemanticException("SEM_ERROR: Variable '" + id
+                throw new SemanticException("Variable '" + id
                         + "' is already defined in this scope!");
             }
             currentMethod.insertLocal(ve);
@@ -290,24 +293,11 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
     }
 
     /**
-     * f0 -> "boolean"
-     * f1 -> "["
-     * f2 -> "]"
-     */
-    public String visit(BooleanArrayType n, String argu) throws Exception {
-        return "boolean[]";
-    }
-
-    /**
      * f0 -> "int"
      * f1 -> "["
      * f2 -> "]"
      */
-    public String visit(IntegerArrayType n, String argu) throws Exception {
+    public String visit(ArrayType n, String argu) throws Exception {
         return "int[]";
-    }
-
-    public String visit(NodeToken n, String argu) throws Exception {
-        return n.toString();
     }
 }

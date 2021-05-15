@@ -37,12 +37,10 @@ public class Main {
                 /* Print offsets for every class. */
                 collector.printOffsets();
 
-            } catch (ParseException ex) {
+            } catch (ParseException | SemanticException ex) {
                 System.out.println(ex.getMessage());
-            } catch (FileNotFoundException ex) {
-                System.err.println(ex.getMessage());
             } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+                System.err.println(ex.getMessage());
             } finally {
                 System.out.print("--------------------------"
                         + "----------------------\n\n");

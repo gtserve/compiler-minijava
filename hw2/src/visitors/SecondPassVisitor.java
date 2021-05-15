@@ -32,11 +32,13 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
     }
 
     private boolean isBasicType(String type) {
-        return (type.equals("int") || type.equals("boolean")
-                || type.equals("int[]") || type.equals("boolean[]"));
+        return (type.equals("int") || type.equals("boolean") || type.equals("int[]"));
     }
 
-    /* Overridden visit() methods. */
+    /* ------------------------------- Overridden visit() methods ------------------------------- */
+    public String visit(NodeToken n, String argu) throws Exception {
+        return n.toString();
+    }
 
     /**
      * f0 -> "class"
@@ -177,7 +179,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         /* SEM_CHECK: Return type and return expression must match. */
         if (isBasicType(retExpr) || isBasicType(methodType)) {
             if (!methodType.equals(retExpr)) {
-                throw new SemanticException("SEM_ERROR: MethodDeclaration: Return "
+                throw new SemanticException("MethodDeclaration: Return "
                         + "expression does not match return type.");
             }
         } else {
@@ -185,7 +187,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
             if (!methodType.equals(retExpr)) {
                 ClassEntry ce = (ClassEntry) classes.get(retExpr);
                 if (!ce.inherits(methodType)) {
-                    throw new SemanticException("SEM_ERROR: MethodDeclaration: Return "
+                    throw new SemanticException("MethodDeclaration: Return "
                             + "expression does not match return type.");
                 }
             }
@@ -225,20 +227,11 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
     }
 
     /**
-     * f0 -> "boolean"
-     * f1 -> "["
-     * f2 -> "]"
-     */
-    public String visit(BooleanArrayType n, String argu) throws Exception {
-        return "boolean[]";
-    }
-
-    /**
      * f0 -> "int"
      * f1 -> "["
      * f2 -> "]"
      */
-    public String visit(IntegerArrayType n, String argu) throws Exception {
+    public String visit(ArrayType n, String argu) throws Exception {
         return "int[]";
     }
 
@@ -255,7 +248,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         /* SEM_CHECK: Identifier type and expression must match. */
         if (isBasicType(expr) || isBasicType(id)) {
             if (!id.equals(expr)) {
-                throw new SemanticException("SEM_ERROR: AssignmentStatement identifier "
+                throw new SemanticException("AssignmentStatement identifier "
                         + "does not match expression");
             }
         } else {
@@ -263,7 +256,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
             if (!id.equals(expr)) {
                 ClassEntry ce = (ClassEntry) classes.get(expr);
                 if (!ce.inherits(id)) {
-                    throw new SemanticException("SEM_ERROR: AssignmentStatement identifier "
+                    throw new SemanticException("AssignmentStatement identifier "
                             + "does not match expression or wrong subtyping");
                 }
             }
@@ -284,31 +277,22 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
     public String visit(ArrayAssignmentStatement n, String argu) throws Exception {
 
         String id = n.f0.accept(this, argu);
-        /* SEM_CHECK: id must be int[]/boolean[]. */
-        if (!id.equals("int[]") && !id.equals("boolean[]")) {
-            throw new SemanticException("SEM_ERROR: Identifier in ArrayAssignment must"
-                    + " be of type int[] or boolean[]");
+        /* SEM_CHECK: id must be int[]. */
+        if (!id.equals("int[]")) {
+            throw new SemanticException("Identifier in ArrayAssignment must be of type int[]");
         }
 
         String expr1 = n.f2.accept(this, argu);
-        /* SEM_CHECK: Expression must be int. */
+        /* SEM_CHECK: Size expression must be int. */
         if (!expr1.equals("int")) {
-            throw new SemanticException("SEM_ERROR: Expression in ArrayAssignment must"
-                    + " be int");
+            throw new SemanticException("Size expression in ArrayAssignment must be of type int");
         }
 
         String expr2 = n.f5.accept(this, argu);
-
-        if (id.equals("int[]")) {
-            if (!expr2.equals("int")) {
-                throw new SemanticException("SEM_ERROR: Assignment expression identifier"
-                        + " in ArrayAssignment must be of type int");
-            }
-        } else {
-            if (!expr2.equals("boolean")) {
-                throw new SemanticException("SEM_ERROR: Assignment expression identifier"
-                        + " in ArrayAssignment must be of type boolean");
-            }
+        /* SEM_CHECK: Assignment expression must be int. */
+        if (!expr2.equals("int")) {
+            throw new SemanticException("Assignment Expression in ArrayAssignment must be of type" +
+                    " int");
         }
 
         return null;
@@ -328,7 +312,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression must be boolean. */
         if (!expr.equals("boolean")) {
-            throw new SemanticException("SEM_ERROR: Expression in if statements must"
+            throw new SemanticException("Expression in if statements must"
                     + " be boolean");
         }
 
@@ -350,7 +334,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression must be boolean. */
         if (!expr.equals("boolean")) {
-            throw new SemanticException("SEM_ERROR: Expression in while statements must"
+            throw new SemanticException("Expression in while statements must"
                     + " be boolean");
         }
 
@@ -371,7 +355,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression in PrintStatement must be only integer. */
         if (!expr.equals("int")) {
-            throw new SemanticException("SEM_ERROR: Expression in PrintStatement "
+            throw new SemanticException("Expression in PrintStatement "
                     + "must be int.");
         }
 
@@ -388,13 +372,13 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr1 = n.f0.accept(this, argu);
         /* SEM_CHECK: Expression must be boolean. */
         if (!expr1.equals("boolean")) {
-            throw new SemanticException("SEM_ERROR: AndExpression");
+            throw new SemanticException("AndExpression");
         }
 
         String expr2 = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression must be boolean. */
         if (!expr2.equals("boolean")) {
-            throw new SemanticException("SEM_ERROR: AndExpression");
+            throw new SemanticException("AndExpression");
         }
 
         return "boolean";
@@ -410,13 +394,13 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr1 = n.f0.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr1.equals("int")) {
-            throw new SemanticException("SEM_ERROR: CompareExpression");
+            throw new SemanticException("CompareExpression");
         }
 
         String expr2 = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr2.equals("int")) {
-            throw new SemanticException("SEM_ERROR: CompareExpression");
+            throw new SemanticException("CompareExpression");
         }
 
         return "boolean";
@@ -432,13 +416,13 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr1 = n.f0.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr1.equals("int")) {
-            throw new SemanticException("SEM_ERROR: PlusExpression");
+            throw new SemanticException("PlusExpression");
         }
 
         String expr2 = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr2.equals("int")) {
-            throw new SemanticException("SEM_ERROR: PlusExpression");
+            throw new SemanticException("PlusExpression");
         }
 
         return "int";
@@ -454,13 +438,13 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr1 = n.f0.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr1.equals("int")) {
-            throw new SemanticException("SEM_ERROR: MinusExpression");
+            throw new SemanticException("MinusExpression");
         }
 
         String expr2 = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr2.equals("int")) {
-            throw new SemanticException("SEM_ERROR: MinusExpression");
+            throw new SemanticException("MinusExpression");
         }
 
         return "int";
@@ -476,14 +460,14 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr1 = n.f0.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr1.equals("int")) {
-            throw new SemanticException("SEM_ERROR: TimesExpression");
+            throw new SemanticException("TimesExpression");
         }
 
         String expr2 = n.f2.accept(this, argu);
         /* SEM_CHECK: Expression must be int. */
         if (!expr2.equals("int")) {
 
-            throw new SemanticException("SEM_ERROR: TimesExpression");
+            throw new SemanticException("TimesExpression");
         }
 
         return "int";
@@ -499,23 +483,18 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         String expr1, expr2;
 
         expr1 = n.f0.accept(this, argu);
-
-        /* SEM_CHECK: Expression must be int[]/boolean[]. */
-        if (!expr1.equals("int[]") && !expr1.equals("boolean[]")) {
-            throw new SemanticException("SEM_ERROR: ArrayLookup");
+        /* SEM_CHECK: Expression must be int[]. */
+        if (!expr1.equals("int[]")) {
+            throw new SemanticException("ArrayLookup: Expression must be int[]");
         }
 
         expr2 = n.f2.accept(this, argu);
-
-        /* SEM_CHECK: Expression must be only integer. */
+        /* SEM_CHECK: Index expression must only be int. */
         if (!expr2.equals("int")) {
-            throw new SemanticException("SEM_ERROR: ArrayLookup");
+            throw new SemanticException("ArrayLookup: Index expression must only be int");
         }
 
-        if (expr1.equals("int[]"))
-            return "int";
-        else
-            return "boolean";
+        return "int";
     }
 
     /**
@@ -526,9 +505,9 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
     public String visit(ArrayLength n, String argu) throws Exception {
         String expr = n.f0.accept(this, argu);
 
-        /* SEM_CHECK: Expression must be int[]/boolean[]. */
-        if (!expr.equals("int[]") && !expr.equals("boolean[]")) {
-            throw new SemanticException("SEM_ERROR: ArrayLength");
+        /* SEM_CHECK: Expression must be int[]. */
+        if (!expr.equals("int[]")) {
+            throw new SemanticException("ArrayLength: PrimaryExpression must be int[]");
         }
 
         return "int";
@@ -549,7 +528,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
         /* SEM_CHECK: Method must belong to class. */
         MethodEntry me = (MethodEntry) classes.get(type).lookup(id, METHOD_ENTRY);
         if (me == null) {
-            throw new SemanticException("SEM_ERROR: Class '" + type
+            throw new SemanticException("Class '" + type
                     + "' can't resolve method '" + id + "'");
         }
 
@@ -563,7 +542,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
 
         /* SEM_CHECK: Method call must match method prototype. */
         if (!me.matchArgs(argStack.pop())) {
-            throw new SemanticException("SEM_ERROR: Incorrect method call for '"
+            throw new SemanticException("Incorrect method call for '"
                     + id + "'");
         }
 
@@ -652,7 +631,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
             } else if (argu.equals("typeId")) {
                 /* SEM_CHECK: Types/Classes must be declared. */
                 if (!classes.contains(id)) {
-                    throw new SemanticException("SEM_ERROR: Can't resolve type '"
+                    throw new SemanticException("Can't resolve type '"
                             + id + "'");
                 } else {
                     return id;
@@ -664,7 +643,7 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
             /* SEM_CHECK: Variables must be declared. */
             entry = current.lookupForUse(id, VAR_ENTRY);
             if (entry == null) {
-                throw new SemanticException("SEM_ERROR: Can't resolve variable '"
+                throw new SemanticException("Can't resolve variable '"
                         + id + "'");
             } else {
                 return entry.getType();
@@ -683,35 +662,17 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
 
     /**
      * f0 -> "new"
-     * f1 -> "boolean"
-     * f2 -> "["
-     * f3 -> Expression()
-     * f4 -> "]"
-     */
-    public String visit(BooleanArrayAllocationExpression n, String argu) throws Exception {
-        String expr = n.f3.accept(this, argu);
-
-        /* SEM_CHECK: Expression must be only integer. */
-        if (!expr.equals("int")) {
-            throw new SemanticException("SEM_ERROR: BooleanArrayAllocationExpression");
-        }
-
-        return "boolean[]";
-    }
-
-    /**
-     * f0 -> "new"
      * f1 -> "int"
      * f2 -> "["
      * f3 -> Expression()
      * f4 -> "]"
      */
-    public String visit(IntegerArrayAllocationExpression n, String argu) throws Exception {
+    public String visit(ArrayAllocationExpression n, String argu) throws Exception {
         String expr = n.f3.accept(this, argu);
 
         /* SEM_CHECK: Expression must be only integer. */
         if (!expr.equals("int")) {
-            throw new SemanticException("SEM_ERROR: IntegerArrayAllocationExpression");
+            throw new SemanticException("Array Allocation Expression");
         }
 
         return "int[]";
@@ -742,10 +703,5 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
      */
     public String visit(BracketExpression n, String argu) throws Exception {
         return n.f1.accept(this, argu);
-    }
-
-
-    public String visit(NodeToken n, String argu) throws Exception {
-        return n.toString();
     }
 }

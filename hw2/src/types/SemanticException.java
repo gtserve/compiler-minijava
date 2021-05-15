@@ -3,6 +3,6 @@ package types;
 public class SemanticException extends Exception {
 
     public SemanticException(String message) {
-        super(message);
+        super("[SEM_ERROR] " + message);
     }
 }
