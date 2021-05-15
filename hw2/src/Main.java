@@ -15,8 +15,12 @@ public class Main {
         FileInputStream fis = null;
         for (int i = 0; i < args.length; i++) {
             try {
-                System.out.println("-------------------- File " + i
-                        + " --------------------");
+//                System.out.println("-------------------- File " + i
+//                        + " --------------------");
+                String fileName = args[i].substring(args[i].lastIndexOf("/") + 1);
+
+                System.out.println("---------------- File #" + (i + 1) + ": " + fileName +
+                        " ----------------");
 
                 fis = new FileInputStream(args[i]);
                 MiniJavaParser parser = new MiniJavaParser(fis);
