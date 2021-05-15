@@ -598,21 +598,6 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
     }
 
     /**
-     * f0 -> NotExpression()
-     *       | PrimaryExpression()
-     */
-    public String visit(Clause n, String argu) throws Exception {
-        String expr = n.f0.accept(this, argu);
-
-        /* SEM_CHECK: Expression must be boolean. */
-        if (!expr.equals("boolean")) {
-            throw new SemanticException("Clause: Expression must be boolean");
-        }
-
-        return "boolean";
-    }
-
-    /**
      * f0 -> <INTEGER_LITERAL>
      */
     public String visit(IntegerLiteral n, String argu) throws Exception {
@@ -701,6 +686,21 @@ public class SecondPassVisitor extends GJDepthFirst<String, String> {
      */
     public String visit(AllocationExpression n, String argu) throws Exception {
         return n.f1.accept(this, "typeId");
+    }
+
+    /**
+     * f0 -> "!"
+     * f1 -> Clause()
+     */
+    public String visit(NotExpression n, String argu) throws Exception {
+        String clause = n.f1.accept(this, argu);
+
+        /* SEM_CHECK: Clause must be boolean. */
+        if (!clause.equals("boolean")) {
+            throw new SemanticException("NotExpression: Clause must be boolean");
+        }
+
+        return "boolean";
     }
 
     /**

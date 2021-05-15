@@ -9,6 +9,7 @@ import static types.EntryType.*;
 
 /*
  * SEM_CHECKS:
+ *   - Unique Class name
  *   - Super Class must be declared
  *   - Unique Method name
  *   - Correct Method overriding
@@ -24,10 +25,6 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
     public SymbolTable getClasses() {
         return classes;
     }
-
-//    private boolean isBasicType(String type) {
-//        return (type.equals("int") || type.equals("boolean") || type.equals("int[]"));
-//    }
 
     public void printDeclarations() {
         System.out.println("----------------- Declarations -----------------");
@@ -111,6 +108,11 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
         String id;
 
         id = n.f1.accept(this, argu);
+        /* SEM_CHECK: Unique Class name. */
+        if (classes.contains(id)) {
+            throw new SemanticException("Class '" + id
+                    + "' is already defined in this program!");
+        }
 
         /* Entry and SymbolTable for class. */
         SymbolTable fields = new SymbolTable(id);
@@ -145,6 +147,12 @@ public class FirstPassVisitor extends GJDepthFirst<String, String> {
         String classId, superClassId;
 
         classId = n.f1.accept(this, argu);
+        /* SEM_CHECK: Unique Class name. */
+        if (classes.contains(classId)) {
+            throw new SemanticException("Class '" + classId
+                    + "' is already defined in this program!");
+        }
+
         superClassId = n.f3.accept(this, argu);
 
         /* SEM_CHECK: Super Class must be declared. */
