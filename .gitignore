@@ -4,3 +4,15 @@
 
 # Output DIR
 out/
+
+# JTB
+minijava-jtb.jj
+JavaCharStream.java
+MiniJavaParser.java
+MiniJavaParserConstants.java
+MiniJavaParserTokenManager.java
+ParseException.java
+Token.java
+TokenMgrError.java
+syntaxtree/
+visitor/
