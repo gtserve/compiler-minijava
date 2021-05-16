@@ -1,11 +1,14 @@
-# IDEA
+# Intellij IDEA files
 *.iml
 .idea
 
-# Output DIR
+# Java Object files
+*.class
+
+# Output Directory
 out/
 
-# JTB
+# JTB Output files
 minijava-jtb.jj
 JavaCharStream.java
 MiniJavaParser.java
