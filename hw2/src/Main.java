@@ -8,7 +8,7 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) {
         if (args.length < 1) {
-            System.err.println("Usage: java Driver <inputFiles>");
+            System.err.println("Usage: java Main [inputFiles]");
             System.exit(1);
         }
 
