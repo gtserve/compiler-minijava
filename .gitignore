@@ -5,8 +5,9 @@
 # Java Object files
 *.class
 
-# Output Directory
+# Output files
 out/
+*.out
 
 # JTB Output files
 minijava-jtb.jj
