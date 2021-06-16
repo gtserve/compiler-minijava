@@ -1,10 +1,10 @@
-package visitors;
+package my_visitors;
 
 import syntaxtree.*;
 import visitor.GJDepthFirst;
-import types.*;
+import my_types.*;
 
-import static types.EntryType.*;
+import static my_types.EntryType.*;
 
 
 /*

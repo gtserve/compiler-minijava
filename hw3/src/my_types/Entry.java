@@ -1,4 +1,4 @@
-package types;
+package my_types;
 
 public abstract class Entry implements Comparable<Entry> {
 

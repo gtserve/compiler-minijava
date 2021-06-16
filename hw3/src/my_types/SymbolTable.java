@@ -1,4 +1,4 @@
-package types;
+package my_types;
 
 import java.util.*;
 

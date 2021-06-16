@@ -1,4 +1,4 @@
-package types;
+package my_types;
 
 public class EntryOffset {
     private final Entry entry;

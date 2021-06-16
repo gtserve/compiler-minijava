@@ -1,4 +1,4 @@
-package types;
+package my_types;
 
 public class SemanticException extends Exception {
 

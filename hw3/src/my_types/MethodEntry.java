@@ -1,8 +1,8 @@
-package types;
+package my_types;
 
 import java.util.ArrayList;
 
-import static types.EntryType.*;
+import static my_types.EntryType.*;
 
 public class MethodEntry extends Entry {
 

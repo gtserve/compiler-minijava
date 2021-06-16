@@ -1,6 +1,6 @@
-package types;
+package my_types;
 
-import static types.EntryType.VAR_ENTRY;
+import static my_types.EntryType.VAR_ENTRY;
 
 public class VarEntry extends Entry {
 
